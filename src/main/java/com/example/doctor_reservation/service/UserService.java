@@ -66,7 +66,7 @@ public class UserService {
     private String saveProfilePicture(MultipartFile file) {
         try {
             String filename = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            String uploadDir = "C:\\Users\\Asus\\Documents\\Doctor_Reservation\\upload"; // Set your upload directory
+            String uploadDir = "C:\\Users\\LEN0V0\\Downloads\\Doctor_Reservation\\Doctor_Reservation\\upload"; // Set your upload directory
             File destination = new File(uploadDir + "/" + filename);
             file.transferTo(destination);
             return "/uploads/" + filename;

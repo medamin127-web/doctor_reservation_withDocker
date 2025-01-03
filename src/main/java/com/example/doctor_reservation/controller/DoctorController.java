@@ -45,11 +45,12 @@ public class DoctorController {
     public ResponseEntity<DoctorDto> getDoctorByUserId(@PathVariable Long userId) {
         Doctor doctor = doctorService.findDoctorByUserId(userId);
         if (doctor != null) {
-            DoctorDto doctorDto = doctorService.convertToDoctorDto(doctor); // Convert Doctor to DoctorDto
-            return ResponseEntity.ok(doctorDto); // Return DoctorDto
+            DoctorDto doctorDto = doctorService.convertToDoctorDto(doctor); 
+            return ResponseEntity.ok(doctorDto);
         }
-        return ResponseEntity.notFound().build(); // Return 404 if doctor is not found
+        return ResponseEntity.notFound().build(); 
     }
+    
 
     @GetMapping("/specialization/{specialization}")
     public ResponseEntity<List<Doctor>> getDoctorsBySpecialization(@PathVariable String specialization) {

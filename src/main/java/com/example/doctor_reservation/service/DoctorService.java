@@ -76,11 +76,11 @@ public class DoctorService {
     public DoctorDto convertToDoctorDto(Doctor doctor) {
         DoctorDto doctorDto = new DoctorDto();
         doctorDto.setId(doctor.getId());
-        doctorDto.setFullName(doctor.getUser().getFullName()); // Assuming User has `fullName`
+        doctorDto.setFullName(doctor.getUser().getFullName());
         doctorDto.setSpecialization(doctor.getSpecialization());
         doctorDto.setQualification(doctor.getQualification());
         doctorDto.setUserId(doctor.getUser().getId());
-        // Map department IDs from the doctor
+        doctorDto.setProfilePictureUrl(doctor.getUser().getProfilePictureUrl()); // Map the picture URL
         doctorDto.setDepartmentIds(
                 doctor.getDepartments()
                         .stream()
@@ -89,6 +89,7 @@ public class DoctorService {
         );
         return doctorDto;
     }
+    
     public Doctor updateDoctor(Long doctorId, Doctor updatedDoctor) {
         Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(() -> new IllegalArgumentException("Doctor not found."));
         doctor.setSpecialization(updatedDoctor.getSpecialization());

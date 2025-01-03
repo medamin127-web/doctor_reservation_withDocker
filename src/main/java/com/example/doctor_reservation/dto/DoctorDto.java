@@ -11,11 +11,10 @@ import java.util.List;
 @AllArgsConstructor
 public class DoctorDto {
     private Long id;
-
     private String fullName;
     private String specialization;
     private String qualification;
     private Long userId;
+    private List<Long> departmentIds;
+    private String profilePictureUrl; }
 
-    private List<Long> departmentIds;// This should be populated from the frontend
-}

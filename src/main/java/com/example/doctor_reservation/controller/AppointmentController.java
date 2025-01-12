@@ -62,6 +62,13 @@ public class AppointmentController {
         return ResponseEntity.ok(appointments);
     }
 
+
+    @GetMapping("/doctor/{doctorId}/upcoming")
+    public ResponseEntity<List<DoctorAppointmentResponseDto>> getUpcomingAppointments(@PathVariable Long doctorId) {
+    List<DoctorAppointmentResponseDto> appointments = appointmentService.getUpcomingAppointments(doctorId);
+    return ResponseEntity.ok(appointments);
+    }
+
     @GetMapping("/doctor/{doctorId}/history")
     public ResponseEntity<List<DoctorAppointmentResponseDto>> getCompletedAppointments(@PathVariable Long doctorId) {
         List<DoctorAppointmentResponseDto> appointments = appointmentService.getCompletedAppointments(doctorId);

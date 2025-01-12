@@ -21,10 +21,8 @@ import java.util.List;
 
 @Configuration
 public class SecurityConfig {
-
     @Autowired
     private JwtFilter jwtFilter;
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -36,48 +34,30 @@ public class SecurityConfig {
         return configuration.getAuthenticationManager();
     }
 
-
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login", "/api/users/register","api/users/**").permitAll()
+                        .requestMatchers("/api/auth/**", "/api/users/**").permitAll()
                         .requestMatchers("/api/appointments/**").permitAll()
                         .requestMatchers("/api/departments/**").permitAll()
                         .requestMatchers("/api/doctors/**").permitAll()
-                       .anyRequest().authenticated()
-
-                        // Protect all other endpoints
+                        .requestMatchers("/uploads/**", "/app/upload/**").permitAll()  // Added both paths
+                        .anyRequest().authenticated()
                 );
-
-
+    
         return http.build();
-
-
     }
-
+    
     @Bean
-    public CorsFilter corsFilter() {
+    public CorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-        configuration.setAllowedOrigins(List.of("http://localhost:3000")); // Replace with your frontend origin
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-        configuration.setExposedHeaders(List.of("Authorization"));
-        source.registerCorsConfiguration("/**", configuration);
-        return new CorsFilter(source);
-    }
-
-    private CorsConfigurationSource corsConfigurationSource() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowCredentials(true);
-        configuration.setAllowedOrigins(List.of("http://localhost:3000")); // Replace with your frontend origin
+        configuration.setAllowedOrigins(List.of("http://localhost:3000"));  // Updated to match new port
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setExposedHeaders(List.of("Authorization"));

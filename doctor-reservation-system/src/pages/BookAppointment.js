@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 
 const BookAppointment = () => {
+    const baseUrl = "http://localhost:8080";
     const navigate = useNavigate();
     const { doctorId } = useParams();
     const [doctor, setDoctor] = useState(null);
@@ -28,7 +29,9 @@ const BookAppointment = () => {
         const fetchDoctorDetails = async () => {
             try {
                 const response = await axios.get(`http://localhost:8080/api/doctors/${doctorId}`);
+               
                 setDoctor(response.data);
+                console.log(doctor);
             } catch (error) {
                 console.error("Error fetching doctor details:", error);
             }
@@ -42,7 +45,6 @@ const BookAppointment = () => {
             try {
                 const response = await axios.get(`http://localhost:8080/api/appointments/doctor/${doctorId}/availability`);
                 setDoctorAvailability(response.data);
-                console.log(response.data)
 
             } catch (error) {
                 console.error("Error fetching availability:", error);
@@ -148,7 +150,7 @@ const BookAppointment = () => {
                 <div>
                     <header className="doctor-header">
                         <img
-                            src={doctor.user.profilePictureUrl || "https://via.placeholder.com/150"}
+                            src={`${baseUrl}${doctor.user.profilePictureUrl}` || "https://via.placeholder.com/150"}
                             alt={doctor.user.fullName}
                         />
                         <div>

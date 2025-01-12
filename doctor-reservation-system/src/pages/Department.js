@@ -6,7 +6,7 @@ import "../App.css"; // Import the CSS file for styling
 const departmentSummaries = {
     Cardiology: "The Cardiology department specializes in diagnosing and treating heart conditions. Our team of experienced cardiologists provides exceptional care for your cardiovascular health.",
     Orthopedics: "The Orthopedics department focuses on musculoskeletal issues, offering advanced treatments for bone and joint conditions.",
-    "General Medicine": "General Medicine provides comprehensive healthcare for adults, addressing a wide range of illnesses and medical needs.",
+    'General Medicine': "General Medicine provides comprehensive healthcare for adults, addressing a wide range of illnesses and medical needs.",
     Pediatrics: "Our Pediatrics department ensures the health and well-being of children with compassionate and expert care.",
     Neurology: "The Neurology department handles conditions related to the brain and nervous system, providing cutting-edge diagnostic and treatment options.",
     Psychiatry: "Psychiatry offers mental health support, therapy, and medication management for patients dealing with psychological disorders.",
@@ -17,6 +17,8 @@ const departmentSummaries = {
 };
 
 const Department = () => {
+    const baseUrl = process.env.REACT_APP_API_BASE_URL;
+
     const { departmentName } = useParams();
     const [doctors, setDoctors] = useState([]);
 
@@ -42,7 +44,7 @@ const Department = () => {
                     doctors.map((doctor) => (
                         <div key={doctor.id} className="doctor-card">
                             <img
-                                src={doctor.user.profilePictureUrl || "https://via.placeholder.com/150"}
+                                src={doctor.user.profilePictureUrl ? `${baseUrl}${doctor.user.profilePictureUrl}` : "https://via.placeholder.com/150"}
                                 alt={doctor.user.fullName}
                                 className="doctor-image"
                             />

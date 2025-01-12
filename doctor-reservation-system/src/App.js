@@ -14,7 +14,10 @@ import AdminDashboard from "./pages/AdminDashboard";
 import UserManagement from './components/UserManagement';
 import DoctorManagement from './components/DoctorManagement';
 
+
+
 function App() {
+
     const location = useLocation();
     const userRole = localStorage.getItem('role');
 

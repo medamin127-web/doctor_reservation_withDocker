@@ -1,0 +1,73 @@
+services:
+  mysql:
+    container_name: doctor-mysql
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_DATABASE: doctor_reservation
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - doctor-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  backend:
+    container_name: doctor-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://doctor-mysql:3306/doctor_reservation
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: 'true'
+      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: 'true'
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQLDialect
+      SPRING_SERVLET_MULTIPART_ENABLED: 'true'
+      SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE: 10MB
+      SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE: 10MB
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY: DEBUG
+      SERVER_PORT: 8080
+      UPLOAD_DIR: /app/upload
+    volumes:
+      - upload_data:/app/upload
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - doctor-network
+
+  frontend:
+    container_name: doctor-frontend
+    build:
+      context: ./doctor-reservation-system
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    volumes:
+      - upload_data:/usr/share/nginx/html/uploads
+    depends_on:
+      - backend
+    networks:
+      - doctor-network
+
+networks:
+  doctor-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+  upload_data:    # New shared volume for uploads

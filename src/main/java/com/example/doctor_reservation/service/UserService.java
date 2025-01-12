@@ -66,12 +66,16 @@ public class UserService {
     private String saveProfilePicture(MultipartFile file) {
         try {
             String filename = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            String uploadDir = "C:\\Users\\LEN0V0\\Downloads\\Doctor_Reservation\\Doctor_Reservation\\upload"; // Set your upload directory
-            File destination = new File(uploadDir + "/" + filename);
+            String uploadDir = "/app/upload";  // Changed to use Docker container path
+            File uploadPath = new File(uploadDir);
+            if (!uploadPath.exists()) {
+                uploadPath.mkdirs();
+            }
+            File destination = new File(uploadDir + File.separator + filename);
             file.transferTo(destination);
             return "/uploads/" + filename;
         } catch (Exception e) {
-            throw new RuntimeException("Failed to save profile picture", e);
+            throw new RuntimeException("Failed to save profile picture: " + e.getMessage(), e);
         }
     }
 

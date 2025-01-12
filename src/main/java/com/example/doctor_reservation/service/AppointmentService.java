@@ -118,6 +118,22 @@ public class AppointmentService {
                 .collect(Collectors.toList());
     }
 
+    // Upcoming appointments
+    public List<DoctorAppointmentResponseDto> getUpcomingAppointments(Long doctorId) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime tomorrow = LocalDate.now().plusDays(1).atStartOfDay();
+        
+        List<Appointment> appointments = appointmentRepository.findByDoctorIdAndAppointmentDateTimeAfterAndStatus(
+            doctorId, 
+            tomorrow,
+            AppointmentStatus.SCHEDULED
+        );
+    
+        return appointments.stream()
+            .map(this::mapToDoctorAppointmentResponseDto)
+            .collect(Collectors.toList());
+    }
+
     private DoctorAppointmentResponseDto mapToDoctorAppointmentResponseDto(Appointment appointment) {
         return DoctorAppointmentResponseDto.builder()
                 .appointmentId(appointment.getId())

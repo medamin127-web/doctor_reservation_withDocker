@@ -1,0 +1,17 @@
+Thank you for installing {{ .Chart.Name }}.
+
+Your release is named {{ .Release.Name }}.
+
+To get the application URLs run:
+
+  Frontend URL: kubectl get svc doctor-frontend -o jsonpath="{.status.loadBalancer.ingress[0].ip}"
+  Backend URL: kubectl get svc doctor-backend 
+  
+To check the status of your pods:
+
+  kubectl get pods
+
+For more information about the deployment:
+
+  helm status {{ .Release.Name }}
+  helm get all {{ .Release.Name }}

@@ -1,0 +1,33 @@
+# MySQL Configuration
+mysql:
+  image: mysql:8.0
+  rootPassword: root
+  database: doctor_reservation
+  persistence:
+    size: 1Gi
+  service:
+    port: 3306
+    type: ClusterIP
+
+backend:
+  image: mah127/doctor-reservation-backend
+  tag: latest
+  replicaCount: 1
+  service:
+    type: ClusterIP
+    port: 8080
+  env:
+    SPRING_DATASOURCE_URL: "jdbc:mysql://doctor-mysql:3306/doctor_reservation"
+    SPRING_DATASOURCE_USERNAME: "root"
+    SPRING_DATASOURCE_PASSWORD: "root"
+    SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
+    SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: "org.hibernate.dialect.MySQLDialect"
+
+# Frontend Configuration
+frontend:
+  image: mah127/doctor-reservation-frontend
+  tag: latest
+  replicaCount: 1
+  service:
+    type: LoadBalancer
+    port: 80

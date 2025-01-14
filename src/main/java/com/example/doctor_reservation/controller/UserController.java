@@ -32,6 +32,7 @@ public class UserController {
     @Autowired
     private DoctorRepository doctorRepository;
 
+    @CrossOrigin(origins = {"http://127.0.0.1:3000", "http://localhost:3000"})
     @PostMapping(value = "/register", consumes = "multipart/form-data")
     public ResponseEntity<User> registerUser(
             @ModelAttribute UserRegistrationDto userRegistrationDto,

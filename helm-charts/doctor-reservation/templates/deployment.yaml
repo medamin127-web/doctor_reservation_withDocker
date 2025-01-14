@@ -1,0 +1,78 @@
+# doctor-reservation/templates/deployments.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: doctor-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: doctor-mysql
+  template:
+    metadata:
+      labels:
+        app: doctor-mysql
+    spec:
+      containers:
+      - name: mysql
+        image: {{ .Values.mysql.image }}
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: {{ .Values.mysql.rootPassword }}
+        - name: MYSQL_DATABASE
+          value: {{ .Values.mysql.database }}
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pv-claim
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: doctor-backend
+spec:
+  replicas: {{ .Values.backend.replicaCount }}
+  selector:
+    matchLabels:
+      app: doctor-backend
+  template:
+    metadata:
+      labels:
+        app: doctor-backend
+    spec:
+      containers:
+      - name: backend
+        image: {{ .Values.backend.image }}:{{ .Values.backend.tag }}
+        ports:
+        - containerPort: 8080
+        env:
+        {{- range $key, $value := .Values.backend.env }}
+        - name: {{ $key }}
+          value: "{{ $value }}"
+        {{- end }}
+
+---        
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: doctor-frontend
+spec:
+  replicas: {{ .Values.frontend.replicaCount }}
+  selector:
+    matchLabels:
+      app: doctor-frontend
+  template:
+    metadata:
+      labels:
+        app: doctor-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: {{ .Values.frontend.image }}:{{ .Values.frontend.tag }}
+        ports:
+        - containerPort: 80

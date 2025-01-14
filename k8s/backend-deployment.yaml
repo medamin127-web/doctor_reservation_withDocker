@@ -1,0 +1,40 @@
+# backend-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: doctor-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: doctor-backend
+  template:
+    metadata:
+      labels:
+        app: doctor-backend
+    spec:
+      containers:
+      - name: doctor-backend
+        image: mah127/doctor-reservation-backend:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:mysql://doctor-mysql:3306/doctor_reservation
+        - name: SPRING_DATASOURCE_USERNAME
+          value: root
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: root
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: doctor-backend
+spec:
+  selector:
+    app: doctor-backend
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
